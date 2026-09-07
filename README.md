@@ -94,7 +94,7 @@ The warehouse is modeled as a **star schema** optimized for song-play analysis: 
 fact table at the center, surrounded by four dimension tables.
 
 <p align="center">
- <img width="2579" height="1779" alt="schema (1)" src="https://github.com/user-attachments/assets/d788eb35-91af-466c- 84eb31bba8c07b7b" />
+ <img width="2579" height="1779" alt="schema (1)" src="https://github.com/user-attachments/assets/ec085a09-a2a1-4270-bf75-6ef18e4bd66a" />
   <br>
   <sub>songplays (fact) linked to users, songs, artists, and time (dimensions)</sub>
 </p>
