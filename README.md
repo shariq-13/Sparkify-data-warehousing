@@ -58,7 +58,8 @@ the source data is scattered across raw JSON event logs and song metadata files 
 
 <p align="center">
   <img width="1148" height="1003" alt="Architecture Diagram" src="https://github.com/user-attachments/assets/f8999b92-d8eb-4132-9b49-286547517778" />
-  <img src="images/architecture.PNG" alt="Sparkify pipeline architecture: S3 to Snowflake raw tables to dbt to star schema to analytics" width="720">
+  <img width="2579" height="1480" alt="architecture" src="https://github.com/user-attachments/assets/93abf088-222f-4c24-9ab0-728eba36c9c7" />
+</p>
   <br>
   <sub>End-to-end pipeline: S3 → Snowflake (raw) → dbt (transform) → Snowflake (star schema) → analytics</sub>
 </p>
@@ -93,7 +94,7 @@ The warehouse is modeled as a **star schema** optimized for song-play analysis: 
 fact table at the center, surrounded by four dimension tables.
 
 <p align="center">
-  <img src="images/schema.PNG" alt="Sparkify star schema: songplays fact table linked to users, songs, artists, and time dimensions" width="720">
+ <img width="2579" height="1779" alt="schema (1)" src="https://github.com/user-attachments/assets/d788eb35-91af-466c- 84eb31bba8c07b7b" />
   <br>
   <sub>songplays (fact) linked to users, songs, artists, and time (dimensions)</sub>
 </p>
