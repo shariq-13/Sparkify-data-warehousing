@@ -1,0 +1,29 @@
+version: 2
+
+sources:
+  - name: raw
+    database: SPARKIFY_DB
+    schema: RAW
+
+    tables:
+
+      - name: SONG_DATA_RAW
+        description: "Raw Sparkify song metadata stored as JSON in VARIANT format"
+        columns:
+          - name: RAW_DATA
+            description: "Raw JSON record containing song and artist metadata"
+            # JSON fields:
+            # song_id, artist_id, artist_name, title, duration,
+            # year, artist_location, artist_latitude, artist_longitude,
+            # num_songs
+
+      - name: LOG_DATA_RAW
+        description: "Raw Sparkify user activity log data stored as JSON in VARIANT format"
+        columns:
+          - name: RAW_DATA
+            description: "Raw JSON record containing user activity and event information"
+            # JSON fields:
+            # artist, auth, firstName, gender, itemInSession,
+            # lastName, length, level, location, method, page,
+            # registration, sessionId, song, status, ts,
+            # userAgent, userId

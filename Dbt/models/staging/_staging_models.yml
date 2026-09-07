@@ -1,0 +1,105 @@
+version: 2
+
+models:
+
+  - name: stg_song_data
+    description: "Cleaned and transformed Sparkify song metadata"
+    columns:
+
+      - name: artist_id
+        description: "Unique identifier for the artist"
+        data_tests:
+          - not_null
+
+      - name: artist_latitude
+        description: "Latitude of the artist location"
+
+      - name: artist_location
+        description: "Location of the artist"
+
+      - name: artist_longitude
+        description: "Longitude of the artist location"
+
+      - name: artist_name
+        description: "Name of the artist"
+
+      - name: duration
+        description: "Duration of the song in seconds"
+
+      - name: num_songs
+        description: "Number of songs associated with the artist"
+
+      - name: title
+        description: "Title of the song"
+
+      - name: year
+        description: "Release year of the song"
+
+      - name: song_id
+        description: "Unique identifier for the song"
+        data_tests:
+          - not_null
+          - unique
+
+
+  - name: stg_log_data
+    description: "Cleaned and transformed Sparkify user activity log data"
+    columns:
+
+      - name: artist
+        description: "Artist associated with the event"
+
+      - name: auth
+        description: "Authentication status of the user"
+
+      - name: first_name
+        description: "First name of the user"
+
+      - name: gender
+        description: "Gender of the user"
+
+      - name: item_in_session
+        description: "Item number within the user's session"
+
+      - name: last_name
+        description: "Last name of the user"
+
+      - name: length
+        description: "Length of the song in seconds"
+
+      - name: level
+        description: "User subscription level, such as free or paid"
+
+      - name: location
+        description: "User location"
+
+      - name: method
+        description: "HTTP request method"
+
+      - name: page
+        description: "Page or action performed by the user"
+
+      - name: registration
+        description: "Timestamp when the user registered"
+
+      - name: session_id
+        description: "Unique identifier for the user's session"
+
+      - name: song
+        description: "Song associated with the event"
+
+      - name: status
+        description: "HTTP response status code"
+
+      - name: event_timestamp
+        description: "Timestamp when the user activity occurred"
+        data_tests:
+          - not_null
+
+      - name: user_agent
+        description: "Browser or application user-agent information"
+
+      - name: user_id
+        description: "Unique identifier for the user"
+        data_tests:
+          - not_null
