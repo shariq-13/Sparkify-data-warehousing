@@ -1,104 +1,119 @@
-<h1 align="center">🎵 Sparkify Data Warehousing Project</h1>
-This project focuses on building a scalable data warehouse using Snowflake for Sparkify, a fictional music streaming startup. The goal is to design an optimized star schema, perform ETL operations, and enable efficient analytical queries on user activity and song metadata.
 <p align="center">
   <img src="https://img.shields.io/badge/Snowflake-29B5E8?style=for-the-badge&logo=snowflake&logoColor=white" alt="Snowflake">
   <img src="https://img.shields.io/badge/AWS%20S3-232F3E?style=for-the-badge&logo=amazonaws&logoColor=white" alt="AWS S3">
-  <img src="https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=python&logoColor=white" alt="Python">
-  <img src="https://img.shields.io/badge/JSON-000000?style=for-the-badge&logo=json&logoColor=white" alt="JSON">
+  <img src="https://img.shields.io/badge/dbt-FF694B?style=for-the-badge&logo=dbt&logoColor=white" alt="dbt">
   <img src="https://img.shields.io/badge/SQL-4479A1?style=for-the-badge&logo=postgresql&logoColor=white" alt="SQL">
+  <img src="https://img.shields.io/badge/JSON-000000?style=for-the-badge&logo=json&logoColor=white" alt="JSON">
+</p>
+
+<h1 align="center">Sparkify Data Warehousing Project</h1>
+
+<p align="center">
+  A production-style cloud data warehouse built on <b>Snowflake</b> for Sparkify, a
+  fictional music streaming company. Raw song catalog and user-activity event data is
+  ingested from <b>Amazon S3</b>, loaded into Snowflake, and modeled with <b>dbt</b>
+  into an analytics-ready star schema for song-play reporting.
 </p>
 
 <p align="center">
-  A cloud data warehouse built on <b>Snowflake</b> for Sparkify, a fictional music
-  streaming startup. Raw song and user-activity logs are extracted from S3, transformed,
-  and loaded into an optimized <b>star schema</b> that powers fast analytical queries
-  on what users are listening to.
-</p>
-
-<p align="center">
-  <img src="https://img.shields.io/badge/schema-star%20schema-informational?style=flat-square">
-  <img src="https://img.shields.io/badge/pipeline-ETL-informational?style=flat-square">
-  <img src="https://img.shields.io/badge/status-active-success?style=flat-square">
+  <img src="https://img.shields.io/badge/architecture-ELT-informational?style=flat-square">
+  <img src="https://img.shields.io/badge/data%20model-star%20schema-informational?style=flat-square">
+  <img src="https://img.shields.io/badge/build-passing-success?style=flat-square">
+  <img src="https://img.shields.io/badge/license-MIT-lightgrey?style=flat-square">
 </p>
 
 ---
 
-## 📖 Table of Contents
+## Table of Contents
 
-- [Overview](#-overview)
-- [Architecture](#-architecture)
-- [Project Structure](#-project-structure)
-- [Datasets](#-datasets-description)
-- [Data Model (Star Schema)](#-data-model-star-schema)
-- [ETL Workflow](#-etl-workflow-summary)
-- [Tech Stack](#-tech-stack)
-- [Getting Started](#-getting-started)
-- [Learning Objectives](#-learning-objectives)
+- [Overview](#overview)
+- [Architecture](#architecture)
+- [Data Model](#data-model)
+- [Datasets](#datasets)
+- [Project Structure](#project-structure)
+- [Tech Stack](#tech-stack)
+- [Getting Started](#getting-started)
+- [dbt Workflow](#dbt-workflow)
+- [Data Quality & Testing](#data-quality--testing)
+- [Roadmap](#roadmap)
+- [License](#license)
 
 ---
 
-## 📌 Overview
+## Overview
 
-Sparkify wants to understand what songs their users are listening to. The raw data
-lives as JSON logs in S3 — one set describing songs and artists, another describing
-user listening activity — and isn't easy to query directly. This project builds an
-ETL pipeline that lands both datasets in Snowflake and reshapes them into a **star
-schema**, so the analytics team can run simple, fast SQL queries instead of parsing
-JSON by hand.
+Sparkify's analytics team needs to understand what songs users are listening to, but
+the source data is scattered across raw JSON event logs and song metadata files in S3
+— not something analysts can query directly. This project implements a cloud-native
+**ELT pipeline** that:
 
-## 🏗️ Architecture
-<p align="center"> 
+1. Lands raw JSON from S3 into Snowflake staging tables.
+2. Uses **dbt** to transform and model that data into a well-tested, documented **star
+   schema**.
+3. Exposes a single fact table and four dimension tables that support fast, simple SQL
+   for song-play analytics (e.g., most-played songs, active users by subscription
+   tier, peak listening hours).
+
+## Architecture
+
+<p align="center">
   <img width="1148" height="1003" alt="Architecture Diagram" src="https://github.com/user-attachments/assets/f8999b92-d8eb-4132-9b49-286547517778" />
-  <img src="images/architecture.PNG" alt="Architecture Diagram" width="700"> 
+  <img src="images/architecture.PNG" alt="Sparkify pipeline architecture: S3 to Snowflake raw tables to dbt to star schema to analytics" width="720">
+  <br>
+  <sub>End-to-end pipeline: S3 → Snowflake (raw) → dbt (transform) → Snowflake (star schema) → analytics</sub>
 </p>
 
 ```mermaid
 flowchart LR
     A["S3
-song_data (JSON)"] --> E["Extract"]
+song_data (JSON)"] --> L["Load"]
     B["S3
-log_data (JSON)"] --> E
-    E --> T["Transform
-Clean + structure into
-facts and dimensions"]
-    T --> L["Load"]
-    L --> SF[("Snowflake
+log_data (JSON)"] --> L
+    L --> RAW[("Snowflake
+Raw Tables")]
+    RAW --> T["dbt
+staging + mart models"]
+    T --> SF[("Snowflake
 Star Schema")]
-    SF --> Q["Analytical Queries"]
+    SF --> Q["BI / SQL Analytics"]
 ```
 
-<p align="center"> <img src="images/schema.PNG" alt="Star Schema Diagram" width="700"> </p>
+**Pipeline stages**
 
-## 📁 Project Structure
+| Stage | Description |
+|---|---|
+| **Extract** | Song metadata and user-activity event logs are read from S3 buckets. |
+| **Load** | Raw JSON is loaded as-is into Snowflake staging tables. |
+| **Transform** | dbt models clean, conform, and join the raw data into fact and dimension tables. |
+| **Serve** | The resulting star schema is queried directly by analysts or BI tools. |
 
-```
-Sparkify-data-warehousing/
-│
-├── README.md                 # Project documentation
-├── images/                   # Architecture and schema diagrams
-│   ├── architecture.PNG
-│   └── schema.PNG
-└── data/
-    ├── log_data/              # User activity event logs (JSON)
-    │   ├── 2018-11-01-events.json
-    │   ├── 2018-11-02-events.json
-    │   └── ...
-    └── song_data/             # Song metadata (JSON)
-        └── A/
-            ├── A/
-            └── B/
-```
+## Data Model
 
-## 🎶 Datasets Description
+The warehouse is modeled as a **star schema** optimized for song-play analysis: one
+fact table at the center, surrounded by four dimension tables.
 
-The project uses two JSON datasets — **Song Data** and **Log Data (Events)** — which
-simulate real activity from the Sparkify app.
+<p align="center">
+  <img src="images/schema.PNG" alt="Sparkify star schema: songplays fact table linked to users, songs, artists, and time dimensions" width="720">
+  <br>
+  <sub>songplays (fact) linked to users, songs, artists, and time (dimensions)</sub>
+</p>
 
-### 1. Song Data
+| Table | Type | Grain | Description |
+|---|---|---|---|
+| `songplays` | Fact | One row per song-play event | Central table linking every play to a user, song, artist, and timestamp. |
+| `users` | Dimension | One row per user | Sparkify app users — name, gender, subscription level. |
+| `songs` | Dimension | One row per song | Song catalog — title, artist reference, year, duration. |
+| `artists` | Dimension | One row per artist | Artist metadata — name and location. |
+| `time` | Dimension | One row per timestamp | Timestamps broken into hour, day, week, month, year, weekday for time-based analysis. |
 
-Each file contains metadata about a single song and its artist.
+## Datasets
 
-**Example Structure:**
+The project uses two JSON datasets that simulate real activity from the Sparkify app.
+
+### Song Data
+
+One file per song, containing metadata about the song and its artist.
+
 ```json
 {
   "num_songs": 1,
@@ -114,8 +129,6 @@ Each file contains metadata about a single song and its artist.
 }
 ```
 
-**Key Fields:**
-
 | Field | Description |
 |---|---|
 | `song_id` | Unique song identifier |
@@ -125,11 +138,10 @@ Each file contains metadata about a single song and its artist.
 | `year` | Song release year |
 | `duration` | Song duration in seconds |
 
-### 2. Log Data (Event Data)
+### Log Data (Events)
 
-Contains user activity logs (e.g., songs played, user sessions).
+User activity logs — songs played, sessions, authentication events.
 
-**Example Structure:**
 ```json
 {
   "artist": "Pavement",
@@ -153,70 +165,150 @@ Contains user activity logs (e.g., songs played, user sessions).
 }
 ```
 
-**Key Fields:**
-
 | Field | Description |
 |---|---|
 | `userId` | Unique user ID |
 | `firstName`, `lastName`, `gender` | User details |
-| `level` | User subscription level (free/paid) |
+| `level` | Subscription level (free/paid) |
 | `song`, `artist`, `length` | Song being played |
 | `sessionId` | Session ID for the event |
 | `location` | User location |
-| `ts` | Timestamp (in milliseconds) |
+| `ts` | Event timestamp (milliseconds) |
 
-## 🧩 Data Model (Star Schema)
+## Project Structure
 
-The warehouse schema is designed as a **star schema** optimized for song-play analysis.
+```
+Sparkify-data-warehousing/
+│
+├── README.md                      # Project documentation
+├── images/                        # Architecture and schema diagrams
+│   ├── architecture.PNG
+│   └── schema.PNG
+│
+├── data/
+│   ├── log_data/                  # User activity event logs (JSON)
+│   │   ├── 2018-11-01-events.json
+│   │   ├── 2018-11-02-events.json
+│   │   └── ...
+│   └── song_data/                 # Song metadata (JSON)
+│       └── A/
+│           ├── A/
+│           └── B/
+│
+└── dbt/                            # dbt project
+    ├── dbt_project.yml
+    ├── packages.yml
+    ├── profiles.yml.example
+    ├── models/
+    │   ├── staging/                # 1:1 with raw sources, light cleaning
+    │   │   ├── stg_songs.sql
+    │   │   ├── stg_events.sql
+    │   │   └── sources.yml
+    │   └── marts/                  # Star schema — facts and dimensions
+    │       ├── fct_songplays.sql
+    │       ├── dim_users.sql
+    │       ├── dim_songs.sql
+    │       ├── dim_artists.sql
+    │       ├── dim_time.sql
+    │       └── schema.yml          # Tests + documentation
+    ├── tests/                       # Custom singular tests
+    └── macros/                      # Reusable Jinja macros
+```
 
-<p align="center">
-  <img src="https://img.shields.io/badge/fact%20table-songplays-orange?style=flat-square">
-  <img src="https://img.shields.io/badge/dimensions-users%20%C2%B7%20songs%20%C2%B7%20artists%20%C2%B7%20time-blue?style=flat-square">
-</p>
-
-### Fact Table
-- **`songplays`** — records in log data associated with song plays.
-
-### Dimension Tables
-- **`users`** — users of the Sparkify app.
-- **`songs`** — songs in the music database.
-- **`artists`** — artists who performed the songs.
-- **`time`** — timestamps of records broken down into units (hour, day, week, etc.).
-
-## ⚙️ ETL Workflow Summary
-
-| Step | Description |
-|---|---|
-| **1. Extract** | Data is read from S3 buckets (`song_data`, `log_data`). |
-| **2. Transform** | JSON data is cleaned and structured into fact and dimension tables. |
-| **3. Load** | Data is inserted into Snowflake tables for analytics. |
-
-## 🛠️ Tech Stack
+## Tech Stack
 
 | Layer | Technology |
 |---|---|
 | Data Warehouse | Snowflake |
 | Raw Storage | Amazon S3 |
-| Language | Python 3 |
+| Transformation | dbt (Data Build Tool) |
 | Data Format | JSON |
 | Query Language | SQL |
+| Version Control | Git |
 
-## 🚀 Getting Started
+## Getting Started
 
-1. **Configure access** — set up AWS credentials with read access to the `song_data` and `log_data` S3 buckets, plus a Snowflake account/warehouse for loading.
-2. **Create the schema** — run the DDL to create the `songplays` fact table and the `users`, `songs`, `artists`, and `time` dimension tables in Snowflake.
-3. **Run the ETL** — extract JSON from S3, transform it into the star schema shape, and load it into Snowflake.
-4. **Query** — use the star schema to answer questions like "what songs are free-tier users playing most" with simple joins instead of parsing raw JSON.
+### Prerequisites
 
-## 🎯 Learning Objectives
+- A Snowflake account with a warehouse, database, and schema provisioned
+- AWS credentials with read access to the `song_data` and `log_data` S3 buckets
+- `dbt-snowflake` installed (`pip install dbt-snowflake`)
 
-- Build a cloud-based data warehouse using **Snowflake**.
-- Design an optimized **star schema** for analytical queries.
-- Understand **data modeling** and **metadata management** in cloud environments.
+### Setup
+
+```bash
+# 1. Clone the repository
+git clone https://github.com/<your-org>/Sparkify-data-warehousing.git
+cd Sparkify-data-warehousing/dbt
+
+# 2. Install dbt dependencies (if using packages.yml)
+dbt deps
+
+# 3. Configure your Snowflake connection
+cp profiles.yml.example ~/.dbt/profiles.yml
+# edit ~/.dbt/profiles.yml with your account, warehouse, database, schema, and credentials
+
+# 4. Load raw JSON from S3 into Snowflake staging tables
+# (via COPY INTO / an external stage, or Snowpipe — see /sql if included)
+
+# 5. Test the connection
+dbt debug
+```
+
+## dbt Workflow
+
+```bash
+# Run all models (staging -> marts)
+dbt run
+
+# Run only the star schema mart models
+dbt run --select marts
+
+# Run data quality tests (not_null, unique, relationships, etc.)
+dbt test
+
+# Generate and view interactive documentation
+dbt docs generate
+dbt docs serve
+```
+
+Once `dbt run` completes, the `songplays` fact table and the `users`, `songs`,
+`artists`, and `time` dimension tables are available in Snowflake and ready to query:
+
+```sql
+select
+    u.level,
+    count(*) as plays
+from fct_songplays sp
+join dim_users u using (user_id)
+group by u.level
+order by plays desc;
+```
+
+## Data Quality & Testing
+
+dbt tests are defined in `models/marts/schema.yml` and enforced on every run:
+
+| Test type | Applied to |
+|---|---|
+| `unique` | Primary keys — `songplay_id`, `user_id`, `song_id`, `artist_id`, `start_time` |
+| `not_null` | Primary and foreign keys across all fact/dimension tables |
+| `relationships` | Foreign keys in `fct_songplays` reference valid dimension rows |
+| `accepted_values` | `users.level` restricted to `free` / `paid` |
+
+## Roadmap
+
+- [ ] Automate S3 → Snowflake loading with Snowpipe (continuous ingestion)
+- [ ] Add incremental dbt models for large event volumes
+- [ ] Add CI (GitHub Actions) to run `dbt build` on every pull request
+- [ ] Expose the star schema through a BI dashboard (e.g., Looker, Tableau, Streamlit)
+
+## License
+
+This project is licensed under the MIT License — see the `LICENSE` file for details.
 
 ---
 
 <p align="center">
-  <sub>Built with Snowflake, AWS S3, Python</sub>
+  <sub>Built with Snowflake · AWS S3 · dbt</sub>
 </p>
-
