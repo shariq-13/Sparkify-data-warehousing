@@ -1,6 +1,5 @@
 <h1 align="center">🎵 Sparkify Data Warehousing Project</h1>
 This project focuses on building a scalable data warehouse using Snowflake for Sparkify, a fictional music streaming startup. The goal is to design an optimized star schema, perform ETL operations, and enable efficient analytical queries on user activity and song metadata.
-<img width="1148" height="1003" alt="Architecture Diagram" src="https://github.com/user-attachments/assets/f8999b92-d8eb-4132-9b49-286547517778" />
 <p align="center">
   <img src="https://img.shields.io/badge/Snowflake-29B5E8?style=for-the-badge&logo=snowflake&logoColor=white" alt="Snowflake">
   <img src="https://img.shields.io/badge/AWS%20S3-232F3E?style=for-the-badge&logo=amazonaws&logoColor=white" alt="AWS S3">
@@ -48,9 +47,9 @@ schema**, so the analytics team can run simple, fast SQL queries instead of pars
 JSON by hand.
 
 ## 🏗️ Architecture
-
-<p align="center">
-  <img src="images/architecture.PNG" alt="Architecture Diagram" width="700">
+<p align="center"> 
+  <img width="1148" height="1003" alt="Architecture Diagram" src="https://github.com/user-attachments/assets/f8999b92-d8eb-4132-9b49-286547517778" />
+  <img src="images/architecture.PNG" alt="Architecture Diagram" width="700"> 
 </p>
 
 ```mermaid
@@ -68,9 +67,7 @@ Star Schema")]
     SF --> Q["Analytical Queries"]
 ```
 
-<p align="center">
-  <img src="images/schema.PNG" alt="Star Schema Diagram" width="700">
-</p>
+<p align="center"> <img src="images/schema.PNG" alt="Star Schema Diagram" width="700"> </p>
 
 ## 📁 Project Structure
 
