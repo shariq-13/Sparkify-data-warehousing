@@ -299,15 +299,10 @@ dbt tests are defined in `models/marts/schema.yml` and enforced on every run:
 
 ## Roadmap
 
-- [ ] Automate S3 → Snowflake loading with Snowpipe (continuous ingestion)
+- [ ] Automate S3 → Snowflake loading with S3 Storage integration (ingestion)
 - [ ] Add incremental dbt models for large event volumes
 - [ ] Add CI (GitHub Actions) to run `dbt build` on every pull request
 - [ ] Expose the star schema through a BI dashboard (e.g., Looker, Tableau, Streamlit)
-
-## License
-
-This project is licensed under the MIT License — see the `LICENSE` file for details.
-
 ---
 
 <p align="center">
